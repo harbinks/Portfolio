@@ -1,0 +1,305 @@
+/* ============================================
+   Terminal Section
+   ============================================ */
+
+.terminal-section {
+  min-height: 100vh;
+  background-color: var(--bg-terminal);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Scanline overlay */
+.terminal-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-lg) var(--space-xl);
+  position: relative;
+  z-index: 2;
+}
+
+.terminal-meta {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-terminal-dim);
+}
+
+.terminal-meta .time {
+  color: var(--text-terminal);
+  font-size: 16px;
+  margin-bottom: var(--space-xs);
+}
+
+.terminal-meta .location {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.terminal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-xl) var(--space-xl);
+  position: relative;
+  z-index: 2;
+}
+
+.terminal-intro {
+  max-width: 640px;
+  margin-bottom: var(--space-2xl);
+}
+
+.terminal-intro h1 {
+  font-family: var(--font-mono);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 400;
+  color: var(--text-terminal);
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+}
+
+.terminal-role {
+  font-family: var(--font-mono);
+  font-size: clamp(14px, 2vw, 16px);
+  color: var(--accent-terminal);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.terminal-role span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.terminal-role .separator {
+  color: var(--text-terminal-dim);
+  font-weight: 300;
+}
+
+.terminal-open-to {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-terminal-dim);
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  border-left: 2px solid var(--accent-terminal);
+  font-style: italic;
+}
+
+.terminal-intro h1 strong {
+  color: var(--accent-terminal);
+  font-weight: 400;
+}
+
+.terminal-intro .subtitle {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-terminal-dim);
+  margin-top: var(--space-lg);
+  line-height: 1.7;
+  max-width: 520px;
+}
+
+/* Terminal prompt area */
+.terminal-prompt-area {
+  background: var(--bg-terminal-subtle);
+  border: 1px solid #2a2820;
+  padding: var(--space-lg);
+  max-width: 640px;
+  font-family: var(--font-mono);
+}
+
+.terminal-prompt-title {
+  font-size: 14px;
+  color: var(--text-terminal-dim);
+  margin-bottom: var(--space-md);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.terminal-history {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: var(--space-sm);
+}
+
+.terminal-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal-history::-webkit-scrollbar-thumb {
+  background: #2a2820;
+}
+
+.terminal-line {
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 1px 0;
+}
+
+.terminal-line.input {
+  color: var(--text-terminal);
+}
+
+.terminal-line.output {
+  color: var(--text-terminal-dim);
+}
+
+.terminal-line.error {
+  color: var(--error-terminal);
+}
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.terminal-prompt-symbol {
+  color: var(--accent-terminal);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-terminal);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  outline: none;
+  caret-color: var(--accent-terminal);
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background-color: var(--accent-terminal);
+  animation: cursor-blink 1s step-start infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  50% { opacity: 0; }
+}
+
+/* Terminal buttons */
+.terminal-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.terminal-btn {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 6px 16px;
+  border: 1px solid #3a3830;
+  color: var(--text-terminal-dim);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  letter-spacing: 0.5px;
+}
+
+.terminal-btn:hover {
+  border-color: var(--accent-terminal);
+  color: var(--accent-terminal);
+}
+
+/* Nav links in terminal */
+.terminal-nav {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: auto;
+  padding-top: var(--space-xl);
+  position: relative;
+  z-index: 2;
+}
+
+.terminal-nav .btn-resume {
+  margin-left: auto;
+}
+
+.terminal-nav a {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-terminal-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid transparent;
+  transition: all var(--duration-fast) ease;
+}
+
+.terminal-nav a:hover {
+  color: var(--accent-terminal);
+  border-bottom-color: var(--accent-terminal);
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  text-align: center;
+  padding: var(--space-lg);
+  position: relative;
+  z-index: 2;
+}
+
+.scroll-indicator span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-terminal-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.scroll-arrow {
+  display: block;
+  margin: var(--space-sm) auto 0;
+  width: 20px;
+  height: 20px;
+  border-right: 1px solid var(--text-terminal-dim);
+  border-bottom: 1px solid var(--text-terminal-dim);
+  transform: rotate(45deg);
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50% { transform: rotate(45deg) translateY(6px); }
+}

@@ -1,0 +1,134 @@
+/* ============================================
+   Desktop / Workspace Section
+   ============================================ */
+
+.desktop-section {
+  background: var(--bg-desktop);
+  position: relative;
+  overflow: hidden;
+  padding-top: var(--space-2xl);
+  padding-bottom: var(--space-3xl);
+}
+
+/* Desk surface gradient */
+.desktop-section::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-desk-surface) 0%,
+    var(--bg-desk-shelf) 100%
+  );
+  z-index: 0;
+}
+
+.desktop-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-xl) 0;
+}
+
+/* Computer + Sticky notes container */
+.workspace-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 500px;
+  padding: var(--space-xl) 0;
+}
+
+/* Sticky note positions */
+.sticky-note {
+  position: absolute;
+  width: 160px;
+  padding: var(--space-md);
+  font-family: var(--font-handwriting);
+  font-size: 18px;
+  line-height: 1.4;
+  color: #333;
+  box-shadow: var(--shadow-retro-sm);
+  cursor: default;
+  transition: transform var(--duration-normal) var(--ease-out);
+  z-index: 5;
+}
+
+.sticky-note:hover {
+  transform: scale(1.05) rotate(0deg) !important;
+  z-index: 10;
+}
+
+.sticky-note.yellow {
+  background: var(--sticky-yellow);
+}
+
+.sticky-note.pink {
+  background: var(--sticky-pink);
+}
+
+.sticky-note.blue {
+  background: var(--sticky-blue);
+}
+
+.sticky-note.green {
+  background: var(--sticky-green);
+}
+
+/* Tape effect on top */
+.sticky-note::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(1deg);
+  width: 50px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border-left: 1px dashed rgba(0,0,0,0.08);
+  border-right: 1px dashed rgba(0,0,0,0.08);
+}
+
+/* Sticky note positions on desktop */
+.sticky-pos-1 {
+  top: 20px;
+  left: 2%;
+}
+
+.sticky-pos-2 {
+  top: 60px;
+  right: 2%;
+}
+
+.sticky-pos-3 {
+  bottom: 100px;
+  left: 5%;
+}
+
+.sticky-pos-4 {
+  bottom: 60px;
+  right: 5%;
+}
+
+/* Section heading style */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-terminal-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+
+.section-title {
+  font-family: var(--font-body);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xl);
+}

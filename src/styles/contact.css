@@ -1,0 +1,85 @@
+/* ============================================
+   Contact Section
+   ============================================ */
+
+.contact-section {
+  background: var(--bg-terminal);
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+.contact-section .section-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-section .section-label {
+  color: var(--text-terminal-dim);
+}
+
+.contact-section .section-title {
+  color: var(--text-terminal);
+  margin-bottom: var(--space-md);
+}
+
+.contact-description {
+  font-size: 15px;
+  color: var(--text-terminal-dim);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.contact-link-btn {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 10px 24px;
+  border: 1px solid #3a3830;
+  color: var(--text-terminal-dim);
+  background: transparent;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: all var(--duration-fast) ease;
+}
+
+.contact-link-btn:hover {
+  border-color: var(--accent-terminal);
+  color: var(--accent-terminal);
+}
+
+.contact-link-btn .btn-icon {
+  font-size: 16px;
+}
+
+/* Copy email toast */
+.copy-toast {
+  position: fixed;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 10px 24px;
+  background: var(--bg-terminal);
+  color: var(--accent-terminal);
+  border: 1px solid var(--accent-terminal);
+  box-shadow: var(--shadow-retro);
+  z-index: 9999;
+  opacity: 0;
+  transition: transform var(--duration-normal) var(--ease-out),
+              opacity var(--duration-normal) ease;
+  pointer-events: none;
+}
+
+.copy-toast.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
