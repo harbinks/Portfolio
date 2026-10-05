@@ -14,8 +14,8 @@ export function ShareNoteButton({ slug, title, onClick, className = '' }: ShareN
   async function share(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
     onClick?.(event);
-    const url = new URL(window.location.href);
-    url.hash = `/notes/${slug}`;
+    const siteBase = new URL(import.meta.env.BASE_URL, `${window.location.origin}${window.location.pathname}`);
+    const url = new URL(`notes/${slug}/`, siteBase);
 
     try {
       if (navigator.share) {
