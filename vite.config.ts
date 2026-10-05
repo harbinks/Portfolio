@@ -24,6 +24,9 @@ function notePages() {
         const description = note.excerpt
         const title = escapeHtml(note.title)
         const safeDescription = escapeHtml(description)
+        const shareImage = note.slug === 'upsc-aspirants-phone-classroom'
+          ? new URL(`images/${note.slug}.png`, siteUrl).toString()
+          : null
         const article = `<!doctype html>
 <html lang="en">
 <head>
@@ -38,8 +41,13 @@ function notePages() {
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${safeDescription}" />
   <meta property="og:url" content="${canonicalUrl}" />
+  ${shareImage ? `<meta property="og:image" content="${shareImage}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="627" />
+  <meta property="og:image:alt" content="${title}" />` : ''}
   <meta property="article:published_time" content="${note.date}" />
   <meta name="twitter:card" content="summary" />
+  ${shareImage ? `<meta name="twitter:image" content="${shareImage}" />` : ''}
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${safeDescription}" />
   <style>
