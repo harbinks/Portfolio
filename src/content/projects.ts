@@ -26,7 +26,7 @@ export const projects: Project[] = [
     title: 'FlightPulse: Flight Delay Investigation System',
     category: 'Data Engineering / AI',
     year: 2026,
-    coverImage: '/images/flightpulse-cover.png',
+    coverImage: 'images/flightpulse-cover.png',
     problem: 'A passenger sees "Delayed 105 minutes: Weather." That label fails to reveal what actually happened — whether a storm triggered an FAA ground stop, air traffic flow management cascaded delays, or previous aircraft rotations were responsible. Existing flight trackers state delays without verifiable evidence.',
     objective: 'Build an operational flight investigation system that gathers evidence across 3 independent data feeds, reasons about causality using a deterministic delay engine, and only then lets a local LLM generate an operational briefing.',
     role: 'Sole developer — designed and implemented ETL pipelines, PostgreSQL data schema, deterministic cause-ranking engine, FastAPI backend, and React/Vite operations dashboard.',
@@ -58,7 +58,7 @@ export const projects: Project[] = [
     ],
     visuals: [
       {
-        src: '/images/flightpulse-cover.png',
+        src: 'images/flightpulse-cover.png',
         alt: 'FlightPulse Flight Delay Investigation System - Evidence First, Deterministic Reasoning, AI Explanation Last',
         caption: 'FlightPulse investigation architecture: Evidence timeline and cause attribution for benchmark UA415.'
       }
