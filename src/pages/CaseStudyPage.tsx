@@ -37,22 +37,84 @@ export function CaseStudyPage() {
           </button>
           <div className="case-study-category">{project.category}</div>
           <h1 className="case-study-title">{project.title}</h1>
+          {project.tagline && <p className="case-study-tagline">{project.tagline}</p>}
           <div className="case-study-year">{project.year}</div>
+
+          {/* Action Links */}
+          <div className="case-study-header-links">
+            {project.demoUrl && (
+              <a className="case-study-btn-primary" href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                🌐 Live Demo
+              </a>
+            )}
+            {project.githubUrl && (
+              <a className="case-study-btn-secondary" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                ⌘ GitHub
+              </a>
+            )}
+            {project.apiDocsUrl && (
+              <a className="case-study-btn-secondary" href={project.apiDocsUrl} target="_blank" rel="noopener noreferrer">
+                📄 API Docs
+              </a>
+            )}
+          </div>
         </div>
       </header>
 
       {/* Body */}
       <div className="case-study-body">
+        {/* Project Hero Cover Image */}
+        {project.coverImage && (
+          <div className="case-study-hero-cover">
+            <img
+              src={project.coverImage}
+              alt={`${project.title} Cover`}
+              className="case-study-hero-img"
+              width={1200}
+              height={630}
+            />
+          </div>
+        )}
+
+        {/* Project Highlights / Stats if provided */}
+        {project.stats && project.stats.length > 0 && (
+          <div className="case-study-stats-bar">
+            {project.stats.map((s, idx) => (
+              <div className="case-study-stat-item" key={idx}>
+                <b>{s.value}</b>
+                <span>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Problem & Objective */}
         <section className="case-study-section">
           <div className="case-study-section-label">01 — The Problem & Objective</div>
+          <h3>"Weather" Isn't an Answer</h3>
           <p>{project.problem}</p>
           <p><strong>Objective:</strong> {project.objective}</p>
         </section>
 
+        {/* Custom In-Depth Sections (02 Idea, 03 Architecture, 04 Data Layer, 05 Database, 06 Reasoning, 07 UA415, 08 Investigation, 09 AI Analyst, 10 Performance, 11 Going Live, 12 Dashboard, 13 Deployment, 14 What Broke, 15 Next) */}
+        {project.customSections && project.customSections.length > 0 && (
+          <>
+            {project.customSections.map((sec, idx) => (
+              <section className="case-study-section" key={idx}>
+                <div className="case-study-section-label">{sec.heading}</div>
+                {sec.subheading && <h3>{sec.subheading}</h3>}
+                <div
+                  className="case-study-custom-content"
+                  dangerouslySetInnerHTML={{ __html: sec.content }}
+                />
+              </section>
+            ))}
+          </>
+        )}
+
         {/* Role & Process */}
         <section className="case-study-section">
-          <div className="case-study-section-label">02 — My Role & Process</div>
+          <div className="case-study-section-label">Engineering Process</div>
           <p>{project.role}</p>
           <div className="process-steps">
             {project.process.map((step, i) => (
@@ -65,7 +127,7 @@ export function CaseStudyPage() {
 
         {/* Tools & Tech Stack */}
         <section className="case-study-section">
-          <div className="case-study-section-label">03 — Tools & Tech Stack</div>
+          <div className="case-study-section-label">Tools & Tech Stack</div>
           <div className="tools-grid">
             {project.tools.map(tool => (
               <span className="tool-tag" key={tool}>{tool}</span>
@@ -73,10 +135,10 @@ export function CaseStudyPage() {
           </div>
         </section>
 
-        {/* Visuals & Demos */}
-        {(project.visuals.length > 0 || project.demoUrl || project.githubUrl) && (
+        {/* Visuals & Demos (for projects without inline custom visuals) */}
+        {(!project.customSections || project.customSections.length === 0) && (project.visuals.length > 0 || project.demoUrl || project.githubUrl) && (
           <section className="case-study-section">
-            <div className="case-study-section-label">04 — Visuals & Demos</div>
+            <div className="case-study-section-label">Visuals & Demos</div>
             {project.visuals.length > 0 && (
               <div className="visuals-gallery">
                 {project.visuals.map((v, i) => (
@@ -94,57 +156,32 @@ export function CaseStudyPage() {
                 ))}
               </div>
             )}
-            {(project.demoUrl || project.githubUrl) && (
-              <div className="case-study-links">
-                {project.demoUrl && (
-                  <a className="case-study-link" href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                    🌐 Live Demo
-                  </a>
-                )}
-                {project.githubUrl && (
-                  <a className="case-study-link" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                    ⌘ View Source
-                  </a>
-                )}
-              </div>
-            )}
           </section>
         )}
 
-        {/* Custom In-Depth Sections if present */}
-        {project.customSections && project.customSections.length > 0 && (
-          <>
-            {project.customSections.map((sec, idx) => (
-              <section className="case-study-section" key={idx}>
-                <div className="case-study-section-label">{sec.heading}</div>
-                {sec.subheading && <h3>{sec.subheading}</h3>}
-                <div
-                  className="case-study-custom-content"
-                  dangerouslySetInnerHTML={{ __html: sec.content }}
-                />
-              </section>
-            ))}
-          </>
-        )}
-
-        {/* Results & Impact */}
-        <section className="case-study-section">
-          <div className="case-study-section-label">05 — Results & Impact</div>
-          <ul className="results-list">
-            {project.results.map((r, i) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Lessons */}
-        <section className="case-study-section">
-          <div className="case-study-section-label">Lessons Learned</div>
-          <ul className="lessons-list">
-            {project.lessons.map((l, i) => (
-              <li key={i}>{l}</li>
-            ))}
-          </ul>
+        {/* Final CTA / Outbound Links */}
+        <section className="case-study-section case-study-cta-section">
+          <div className="case-study-cta-box">
+            <h3>{project.title}</h3>
+            {project.tagline && <p>{project.tagline}</p>}
+            <div className="case-study-cta-links">
+              {project.demoUrl && (
+                <a className="case-study-btn-primary" href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                  🌐 Try Live Demo
+                </a>
+              )}
+              {project.githubUrl && (
+                <a className="case-study-btn-secondary" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                  ⌘ View Source
+                </a>
+              )}
+              {project.apiDocsUrl && (
+                <a className="case-study-btn-secondary" href={project.apiDocsUrl} target="_blank" rel="noopener noreferrer">
+                  📄 View API Docs
+                </a>
+              )}
+            </div>
+          </div>
         </section>
 
         {/* Prev/Next */}
