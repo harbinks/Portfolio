@@ -23,44 +23,60 @@ export interface Project {
 export const projects: Project[] = [
   {
     slug: 'flightpulse',
-    title: 'FlightPulse — Flight Delay Investigation System',
+    title: 'FlightPulse: Flight Delay Investigation System',
     category: 'Data Engineering / AI',
     year: 2026,
-    coverImage: '/images/flightpulse-dashboard.png',
-    problem: 'A flight tracker can report a delay reason such as WEATHER, but that label does not show what happened. Passengers need an explanation grounded in flight, weather, and air traffic evidence, with uncertainty made clear.',
-    objective: 'Build an operational flight investigation system that combines independent aviation data, ranks delay causes with a deterministic evidence engine, and uses an LLM only to explain the established findings.',
-    role: 'Sole developer — designed and built the data pipelines, PostgreSQL schema, attribution engine, FastAPI backend, React dashboard, and deployment.',
+    coverImage: '/images/flightpulse-cover.png',
+    problem: 'A passenger sees "Delayed 105 minutes: Weather." That label fails to reveal what actually happened — whether a storm triggered an FAA ground stop, air traffic flow management cascaded delays, or previous aircraft rotations were responsible. Existing flight trackers state delays without verifiable evidence.',
+    objective: 'Build an operational flight investigation system that gathers evidence across 3 independent data feeds, reasons about causality using a deterministic delay engine, and only then lets a local LLM generate an operational briefing.',
+    role: 'Sole developer — designed and implemented ETL pipelines, PostgreSQL data schema, deterministic cause-ranking engine, FastAPI backend, and React/Vite operations dashboard.',
     process: [
-      'Built ETL pipelines for OpenSky flight telemetry, Open-Meteo weather observations, and FAA NAS disruption data, with validation, deduplication, retry handling, and idempotent loads',
-      'Designed a PostgreSQL data model with source provenance, UTC timestamps, airport time zones, and operational sync tracking',
-      'Implemented deterministic cause ranking across weather, ATC, airline operations, late aircraft, airport, and insufficient evidence, including confidence and supporting facts',
-      'Kept the LLM outside the decision path: it receives the engine findings and produces a grounded operational briefing, while the dashboard remains useful without it',
-      'Built a React and Vite operations dashboard with demo and live modes, flight search, timelines, weather, FAA advisories, and candidate cause breakdowns',
-      'Profiled local Llama 3 inference and reduced the prompt from about 1,235 tokens to about 330, bringing cold inference from as much as 93 seconds to about 42 seconds',
-      'Deployed the frontend on Vercel, FastAPI on Render, and PostgreSQL on Supabase; handled live data gaps and OpenSky rate limits transparently',
+      'Built fault-tolerant ETL pipelines for OpenSky (ADS-B telemetry), Open-Meteo (METAR weather observations), and FAA NAS/ATCSCC (ground stops & delay programs) with retry backoff, 429 rate limit handling, duplicate detection, and idempotent loads.',
+      'Architected PostgreSQL schema (Supabase) with strict source provenance (OPENSKY_LIVE, FIXTURE_REPLAY, FLIGHTAWARE), UTC TIMESTAMPTZ, IANA timezones, and operations sync logs.',
+      'Developed a deterministic delay engine that evaluates flight schedules, atmospheric conditions, and FAA advisories to rank candidate causes (WEATHER, ATC, AIRLINE_OPERATIONAL, LATE_AIRCRAFT, AIRPORT, or INSUFFICIENT_EVIDENCE) with confidence scores.',
+      'Separated reasoning from synthesis: kept the LLM outside the decision loop, supplying established facts to Ollama / Llama 3 to output structured Operational Briefings.',
+      'Engineered an airport operations room dashboard in React/Vite featuring interactive flight search, chronological investigation timeline, weather & disruption panels, and candidate cause breakdowns.',
+      'Profiled local inference bottlenecks: streamlined prompts from ~1,235 tokens to ~330 tokens, cutting cold inference time from ~93s down to ~42.3s.',
+      'Deployed full stack across Vercel (frontend), Render (FastAPI), and Supabase (PostgreSQL 17), handling API rate limits and telemetry gaps gracefully.'
     ],
-    tools: ['Python', 'FastAPI', 'Pydantic', 'PostgreSQL', 'Supabase', 'React', 'Vite', 'Ollama', 'Llama 3', 'OpenSky', 'Open-Meteo', 'FAA NAS', 'pytest', 'Vercel', 'Render'],
+    tools: [
+      'Python',
+      'FastAPI',
+      'PostgreSQL',
+      'Supabase',
+      'React',
+      'Vite',
+      'Llama 3',
+      'Ollama',
+      'OpenSky',
+      'Open-Meteo',
+      'FAA NAS',
+      'Pydantic',
+      'pytest',
+      'Vercel',
+      'Render'
+    ],
     visuals: [
       {
-        src: '/images/flightpulse-investigation.png',
-        alt: 'FlightPulse investigation view with a chronological flight timeline, METAR observations, FAA disruption advisory, and candidate cause scoring',
-        caption: 'An investigation combines the flight timeline with weather and FAA evidence to show how the cause was attributed.',
-      },
+        src: '/images/flightpulse-cover.png',
+        alt: 'FlightPulse Flight Delay Investigation System - Evidence First, Deterministic Reasoning, AI Explanation Last',
+        caption: 'FlightPulse investigation architecture: Evidence timeline and cause attribution for benchmark UA415.'
+      }
     ],
     demoUrl: 'https://flightpulse-psi.vercel.app/',
     githubUrl: 'https://github.com/harbinks/flightpulse',
     results: [
-      'Passed 103 of 103 backend tests, with zero frontend lint errors and a successful production build',
-      'Reduced the LLM prompt by about 73% and cold inference from up to 93 seconds to about 42 seconds; cached responses return in tens of milliseconds',
-      'Investigated a 105-minute UA415 delay using weather observations, an FAA ground stop, and operational events; the engine reported a high-confidence weather and ATC interaction based on 14 facts',
-      'Preserved honest live telemetry: unavailable schedule fields stay null, and rate limits appear as partial system status instead of fabricated flights',
+      'Successfully passed 103 of 103 backend test suites with 0 frontend lint errors.',
+      'Reduced LLM prompt token size by 73% (~1,235 to ~330 tokens) and cut cold inference latency from 93s to ~42.3s.',
+      'Investigated UA415 benchmark flight (105 min delay), accurately establishing ATC / Weather Interaction with High Confidence (1.00 score across 14 facts).',
+      'Maintained honest live telemetry: strictly models missing/rate-limited data rather than hallucinating scheduled flights.'
     ],
     lessons: [
-      'The LLM should explain evidence rather than decide the cause; deterministic attribution keeps confidence and uncertainty auditable',
-      'Data provenance, validation, duplicate handling, and failure states are core parts of reliable ingestion',
-      'Measure prompt size, concurrency, and token speed before changing timeouts; architecture choices can dominate inference latency',
-      'Model missing data explicitly instead of filling it with plausible guesses',
-    ],
+      'Data engineering is the foundation: validation, provenance, idempotency, and failure modes are paramount.',
+      'AI should explain evidence rather than make opaque decisions — deterministic attribution preserves auditability.',
+      'Never fabricate missing data — explicitly model partial states and API limits (such as OpenSky 429s).',
+      'Measure before optimizing: profiling prompt payload and hardware utilization was far more effective than increasing timeouts.'
+    ]
   },
   {
     slug: 'rag-ai-assistant',
