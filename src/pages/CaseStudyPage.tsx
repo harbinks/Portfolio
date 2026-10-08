@@ -52,11 +52,6 @@ export function CaseStudyPage() {
                 ⌘ GitHub
               </a>
             )}
-            {project.apiDocsUrl && (
-              <a className="case-study-btn-secondary" href={project.apiDocsUrl} target="_blank" rel="noopener noreferrer">
-                📄 API Docs
-              </a>
-            )}
           </div>
         </div>
       </header>
@@ -173,11 +168,6 @@ export function CaseStudyPage() {
               {project.githubUrl && (
                 <a className="case-study-btn-secondary" href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                   ⌘ View Source
-                </a>
-              )}
-              {project.apiDocsUrl && (
-                <a className="case-study-btn-secondary" href={project.apiDocsUrl} target="_blank" rel="noopener noreferrer">
-                  📄 View API Docs
                 </a>
               )}
             </div>

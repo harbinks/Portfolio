@@ -15,7 +15,6 @@ export interface Project {
     caption?: string;
   }[];
   tagline?: string;
-  apiDocsUrl?: string;
   stats?: {
     value: string;
     label: string;
@@ -39,7 +38,6 @@ export const projects: Project[] = [
     category: 'Data Engineering / AI',
     year: 2026,
     coverImage: 'images/flightpulse-cover.png',
-    apiDocsUrl: 'https://flightpulse-51i5.onrender.com/docs',
     demoUrl: 'https://flightpulse-psi.vercel.app/',
     githubUrl: 'https://github.com/harbinks/flightpulse',
     stats: [
