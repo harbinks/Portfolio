@@ -111,6 +111,22 @@ export function CaseStudyPage() {
           </section>
         )}
 
+        {/* Custom In-Depth Sections if present */}
+        {project.customSections && project.customSections.length > 0 && (
+          <>
+            {project.customSections.map((sec, idx) => (
+              <section className="case-study-section" key={idx}>
+                <div className="case-study-section-label">{sec.heading}</div>
+                {sec.subheading && <h3>{sec.subheading}</h3>}
+                <div
+                  className="case-study-custom-content"
+                  dangerouslySetInnerHTML={{ __html: sec.content }}
+                />
+              </section>
+            ))}
+          </>
+        )}
+
         {/* Results & Impact */}
         <section className="case-study-section">
           <div className="case-study-section-label">05 — Results & Impact</div>

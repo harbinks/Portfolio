@@ -18,6 +18,11 @@ export interface Project {
   githubUrl?: string;
   results: string[];
   lessons: string[];
+  customSections?: {
+    heading: string;
+    subheading?: string;
+    content: string;
+  }[];
 }
 
 export const projects: Project[] = [
@@ -76,6 +81,86 @@ export const projects: Project[] = [
       'AI should explain evidence rather than make opaque decisions — deterministic attribution preserves auditability.',
       'Never fabricate missing data — explicitly model partial states and API limits (such as OpenSky 429s).',
       'Measure before optimizing: profiling prompt payload and hardware utilization was far more effective than increasing timeouts.'
+    ],
+    customSections: [
+      {
+        heading: '02 / THE IDEA',
+        subheading: 'Evidence First, AI Last',
+        content: `<p>The most important decision in the project: <strong>the LLM is not the source of truth.</strong> FlightPulse keeps four things separate:</p>
+<ul>
+  <li><strong>Carrier-reported reason:</strong> What the airline or source reported, e.g. WEATHER.</li>
+  <li><strong>Candidate cause:</strong> What the deterministic engine finds best supported by the evidence.</li>
+  <li><strong>Supporting evidence:</strong> Observed facts: gusts, visibility, FAA events, timing.</li>
+  <li><strong>Confidence:</strong> HIGH, MEDIUM, LOW or INSUFFICIENT. The LLM cannot override it.</li>
+</ul>`
+      },
+      {
+        heading: '04 / DATA LAYER',
+        subheading: 'Three Pipelines, One Pattern',
+        content: `<p>Each source follows extract, validate, transform, load, and analyze. I wanted the project to show real data engineering, not just a frontend calling a third-party API.</p>
+<ul>
+  <li><strong>Flights (OpenSky):</strong> Retry and backoff, HTTP 429 handling, callsign and timestamp validation, duplicate detection, upserts, dry-run mode, and fixture replay. 11 tests at initial validation.</li>
+  <li><strong>Weather (Open-Meteo):</strong> Wind, gusts, visibility, temperature, and conditions. Tested on KORD, KATL, KDEN, and KJFK. 21 tests. Surface pressure isn't a METAR altimeter reading, so it isn't treated as one.</li>
+  <li><strong>Disruptions (FAA NAS/ATCSCC):</strong> Ground stops, ground delay programs, outages, and delays. 30 tests. Feed is US-focused.</li>
+</ul>
+<p>Fixture runs showed the pipeline doing its job: one flight run extracted 10 records, transformed 5, removed 1 duplicate, and skipped 4; a second real load updated rows instead of duplicating them.</p>`
+      },
+      {
+        heading: '05 / DATABASE & PROVENANCE',
+        subheading: 'Lineage & Auditable Storage',
+        content: `<p>PostgreSQL (Supabase) with schemas for <code>airports</code>, <code>airlines</code>, <code>flights</code>, <code>weather_observations</code>, <code>news_events</code>, <code>flight_events</code>, and <code>operations_sync_log</code>. Uses UTC <code>TIMESTAMPTZ</code>, IANA airport time zones, JSONB metadata, indexes, foreign keys, and idempotent ingestion.</p>
+<p>Every flight is explicitly tagged with its origin source (<code>FLIGHTAWARE</code>, <code>FIXTURE_REPLAY</code>, <code>OPENSKY_LIVE</code>) because live telemetry and demo fixtures must never silently mix. Benchmark flights like UA415 are protected so live ingestion cannot overwrite benchmark truth.</p>`
+      },
+      {
+        heading: '06 / REASONING ENGINE',
+        subheading: 'Teaching the System to Say "I Don\'t Know"',
+        content: `<p>The engine checks the schedule, delay, nearby weather, FAA advisories, and timeline events, weighing timing and location. It then ranks candidates: <code>WEATHER</code>, <code>ATC</code>, <code>AIRLINE_OPERATIONAL</code>, <code>LATE_AIRCRAFT</code>, <code>AIRPORT</code>, or <code>UNKNOWN / INSUFFICIENT_EVIDENCE</code>.</p>
+<p>Each classification is accompanied by an evidence score, confidence rating, supporting facts, and an explanation. If evidence falls below a rigorous threshold, the engine deliberately refuses to force a cause.</p>
+<div style="background: rgba(0,0,0,0.04); border-left: 3px solid var(--accent-terminal); padding: 12px; margin: 12px 0;">
+  <strong>A Deliberately Hard Test:</strong> Given a 105 min delay reported as WEATHER, but with weather and FAA data from the wrong time window, the engine outputs <code>UNKNOWN / INSUFFICIENT_EVIDENCE</code>. The system would rather be incomplete than confidently wrong.
+</div>`
+      },
+      {
+        heading: '07 / BENCHMARK CASE STUDY',
+        subheading: 'The UA415 Investigation',
+        content: `<p>United Airlines UA415 from Chicago O'Hare (ORD) to Denver (DEN), delayed 105 minutes, carrier reported as <code>WEATHER</code>.</p>
+<ul>
+  <li>Severe convective weather & thunderstorms recorded around ORD</li>
+  <li>Peak gusts reached ~42 kt with visibility collapsing to ~2.5 mi</li>
+  <li>FAA ground stop initiated affecting ORD operations, followed by dispatch ground delays</li>
+  <li>FlightPulse attribution: <strong>ATC / WEATHER INTERACTION</strong> (Confidence: HIGH, Evidence score: 1.00 across 14 observed facts)</li>
+</ul>
+<p>The dashboard renders this as an interactive chronological timeline: scheduled departure &rarr; convective weather development &rarr; FAA ground stop restriction &rarr; delay events &rarr; actual departure.</p>`
+      },
+      {
+        heading: '09 / PERFORMANCE PROFILING',
+        subheading: 'Cutting AI Cold Inference from 93s to 42s',
+        content: `<p>Local Ollama / Llama 3 inference initially took 67 to 93 seconds. Raising the timeout was not an option. Profiling exposed four critical bottlenecks:</p>
+<ol>
+  <li><strong>Bloated prompt:</strong> 4,741 characters (~1,235 tokens), with weather and event observations redundantly repeated.</li>
+  <li><strong>CPU/GPU hardware path:</strong> ~55% CPU / 45% GPU running at 4.2 to 4.5 tokens/sec, meaning every excess token penalized latency.</li>
+  <li><strong>Request queuing:</strong> React development renders and rapid flight switches queued concurrent inference requests.</li>
+  <li><strong>Truncated outputs:</strong> A <code>num_predict: 220</code> cap chopped the JSON payload mid-generation.</li>
+</ol>
+<p><strong>Fixes implemented:</strong> Lean prompt structure (dropped 73% of tokens), <code>num_ctx: 1024</code>, tuned temperature, removed rigid token caps, per-flight concurrency locks, in-memory caching, startup model prewarming, and client-side <code>AbortController</code> on navigation.</p>`
+      },
+      {
+        heading: '10 / REAL-WORLD TELEMETRY',
+        subheading: 'Honest Handling of ADS-B Gaps and HTTP 429',
+        content: `<p>OpenSky ADS-B telemetry provides aircraft position, callsign, and timestamps — not airline schedules or official delay causes. An early prototype assumed first seen was scheduled departure. That was abandoned in favor of truth: live records preserve scheduled fields as NULL and mark sources as <code>OPENSKY_LIVE</code>.</p>
+<p>When OpenSky issued an HTTP 429 rate limit with a ~22.4 hour cooldown, the system didn't disguise it: the status dashboard clearly surfaces <code>OPENSKY: RATE LIMITED</code>, weather OK, FAA OK, status PARTIAL — refusing to fabricate flights.</p>`
+      },
+      {
+        heading: '13 / KNOWN LIMITATIONS',
+        subheading: 'Honest Engineering Tradeoffs',
+        content: `<ul>
+  <li><strong>OpenSky rate limits:</strong> Public unauthenticated telemetry cannot guarantee continuous stream ingestion.</li>
+  <li><strong>Missing ADS-B metadata:</strong> Live transponder data frequently omits planned destinations or equipment type.</li>
+  <li><strong>Aircraft rotation modeling:</strong> Cascading late-aircraft delays require analyzing the previous flight leg.</li>
+  <li><strong>Airport-level granularity:</strong> En-route convective storms and waypoint airspace polygons are not yet evaluated.</li>
+  <li><strong>Cloud vs Local AI:</strong> In public cloud demo (Vercel/Render), local Ollama is bypassed in favor of instant deterministic attribution.</li>
+</ul>`
+      }
     ]
   },
   {
